@@ -56,17 +56,17 @@ class ConfigDiverseSampling():
         self.lr_t2 = 1e-3
         self.train_batch_size = 16
         self.test_batch_size = 1
-        self.epoch_t2 = 4000
+        self.epoch_t2 = 2000
         self.epoch_fix_t2 = 100
 
-        self.temperature_p1 = 0.85 # 1
+        self.temperature_p1 = 0.85 
         self.minthreshold = 25
 
         # todo: dlow t2 > kl:ade:div = 1:2:25;
         #  gsps t2 > recovhis : limblen : angle : divp1 : divp2 : ade : mmade : lkh = 100: 500 : 100 : 8 : 25 : 2 : 1, 0.01
-        self.t2_kl_p1_weight = 0.5 # 1
-        self.t2_ade_weight = 40 # 10
-        self.t2_diversity_weight = 20 # 25
+        self.t2_kl_p1_weight = 0.5 
+        self.t2_ade_weight = 40 
+        self.t2_diversity_weight = 20 
 
         self.dropout_rate = 0
 
