@@ -115,15 +115,10 @@ class RunDiverseSampling():
 
         self.summary = SummaryWriter(self.cfg.ckpt_dir)
 
-    def _sample_weight_gumbel_softmax(self, logits, temperature=0.85, eps=1e-20):
+    def _sample_weight_softmax(self, logits, temperature=0.85, eps=1e-20):
 
-        mean = logits
-        # 假设标准差为 temperature 的某个函数，这里简单地设为 1（或根据需要进行调整）
-        # 例如，可以使用 temperature 来调整标准差：std = torch.exp(temperature) 或其他适合的函数
-        std = torch.ones_like(mean) * temperature  # 或者选择一个具体的值或函数
-
-        # 创建正态分布
-        dist = torch.distributions.Normal(mean, std)
+        lambda_ = torch.exp(logits)
+        dist = torch.distributions.Poisson(rate=lambda_)
 
         # 从分布中采样
         samples = dist.sample()
@@ -181,7 +176,7 @@ class RunDiverseSampling():
 
 
             logtics = torch.ones((b * self.cfg.nk, 1, self.cfg.base_num_p1), device=self.cfg.device) / self.cfg.base_num_p1  # b*h, 1, 10
-            many_weights = self._sample_weight_gumbel_softmax(logtics, temperature=self.cfg.temperature_p1)  # b*h, 1, 10
+            many_weights = self._sample_weight_softmax(logtics, temperature=self.cfg.temperature_p1)  # b*h, 1, 10
 
             all_z, all_mean_p1, all_logvar_p1 = self.model(condition=padded_inputs_dct, repeated_eps=repeated_eps, many_weights=many_weights,
                                                               multi_modal_head=self.cfg.nk)  # b*(10), 128
